@@ -9,14 +9,14 @@
         用户登录
       </div>
       <el-form :model="loginForm" :rules="loginRules">
-        <el-form-item prop="name">
-          <el-input v-model="loginForm.name" prefix-icon="el-icon-user" placeholder="请输入用户名" style="background-color:#bfcbd9"></el-input>
+        <el-form-item prop="username">
+          <el-input v-model="loginForm.username" prefix-icon="el-icon-user" placeholder="请输入用户名" style="background-color:#bfcbd9"></el-input>
         </el-form-item>
         <el-form-item prop="password">
           <el-input v-model="loginForm.password" type="password" prefix-icon="el-icon-lock" placeholder="请输入密码"></el-input>
         </el-form-item>
         <el-form-item class="footer">
-          <el-button type="primary" @click="submitForm(loginForm)">登录</el-button>
+          <el-button type="primary" @click="submitForm()">登录</el-button>
           <el-button @click="registerForm(loginForm)" style="margin-left:50px">注册</el-button>
         </el-form-item>
       </el-form>
@@ -25,15 +25,16 @@
 </template>
 
 <script>
+import { getUser } from '../api/user'
 export default {
   data () {
     return {
       loginForm: {
-        name: '',
+        username: '',
         password: ''
       },
       loginRules: {
-        name: [
+        username: [
           { required: true, message: '请输入用户名', trigger: 'blur' },
           { min: 3, max: 10, message: '长度在 3 到 10 个字符', trigger: 'blur' }
         ],
@@ -45,11 +46,24 @@ export default {
     }
   },
   methods: {
-    submitForm (loginForm) {
-      this.$router.push({ path: '/home' })
-      console.log(loginForm)
+    submitForm () {
+      getUser(this.loginForm).then(res => {
+        if (res.data.status === 0) {
+          let user = res.data.data[0]
+          //登录成功时，修改vuex中user的值，实现数据通信
+          this.$store.commit('setUser', user)
+          this.$bus.$emit('getUser', user)
+          this.$message({
+            message: '登录成功',
+            type: 'success'
+          })
+          this.$router.push({ path: '/home' })
+        } else {
+          this.$message.error('登录失败，请检查用户名与密码')
+        }
+      })
     }
-  }
+  },
 }
 </script>
 

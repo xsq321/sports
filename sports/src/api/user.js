@@ -30,3 +30,11 @@ export const updateUser = (param) => {
     data: param
   })
 }
+//注意是getUser，因为只能获取到一条用户数据
+export const getUser = (param) => {
+  return axios.request({
+    url: '/user/login',
+    method: 'post',
+    data: param
+  })
+}

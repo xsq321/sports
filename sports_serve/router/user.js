@@ -38,5 +38,22 @@ router.post('/user/update', (req, res) => {
     })
   })
 })
+//通过用户名和密码获取用户数据
+router.post('/user/login', (req, res) => {
+  const sql = 'select * from users where username=? and password=?'
+  db.query(sql, [req.body.username, req.body.password], (err, results) => {
+    if (results.length === 1) {
+      res.send({
+        status: 0, //0表示成功，1表示失败
+        data: results
+      })
+    } else {
+      res.send({
+        status: 1,
+        msg: '账号密码错误'
+      })
+    }
+  })
+})
 
 module.exports = router

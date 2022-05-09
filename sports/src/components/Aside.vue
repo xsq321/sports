@@ -7,11 +7,11 @@
           <i class="el-icon-s-home" style="font-size:25px"></i>
           <span class="menu font">首页</span>
         </el-menu-item>
-        <el-menu-item index="rank">
+        <el-menu-item index="rank" v-if="isAdmin">
           <i class="el-icon-s-custom" style="font-size:25px"></i>
           <span class="menu font">用户管理</span>
         </el-menu-item>
-        <el-submenu index="3">
+        <el-submenu index="3" v-if="isAdmin">
           <template slot="title">
             <i class="el-icon-s-help" style="font-size:25px"></i>
             <span class="menu font">运动会管理</span>
@@ -21,14 +21,14 @@
             <el-menu-item index="item" class="menu">比赛项目管理</el-menu-item>
           </el-menu-item-group>
         </el-submenu>
-        <el-submenu index="4">
+        <el-submenu index="4" v-if="isAdmin || isPlayer">
           <template slot="title">
             <i class="el-icon-s-promotion" style="font-size:25px"></i>
             <span class="menu font">参赛管理</span>
           </template>
           <el-menu-item-group>
-            <el-menu-item index="join" class="menu">报名管理</el-menu-item>
-            <el-menu-item index="player" class="menu">参赛运动员管理</el-menu-item>
+            <el-menu-item index="join" class="menu" v-if="isAdmin||isPlayer">报名管理</el-menu-item>
+            <el-menu-item index="player" class="menu" v-if="isAdmin">参赛运动员管理</el-menu-item>
           </el-menu-item-group>
         </el-submenu>
         <el-submenu index="5">
@@ -38,7 +38,7 @@
           </template>
           <el-menu-item-group>
             <el-menu-item index="score" class="menu">成绩查看</el-menu-item>
-            <el-menu-item index="input" class="menu">成绩录入</el-menu-item>
+            <el-menu-item index="input" class="menu" v-if="isAdmin||isScorer">成绩录入</el-menu-item>
           </el-menu-item-group>
         </el-submenu>
       </el-menu>
@@ -50,7 +50,9 @@
 export default {
   data () {
     return {
-
+      isAdmin: false,
+      isScorer: false,
+      isPlayer: false
     }
   },
   computed: {
@@ -60,8 +62,15 @@ export default {
       }
     }
   },
-  mounted () {
-
+  created () {
+    let rank = this.$store.state.user.rank
+    if (rank === '超级管理员') {
+      this.isAdmin = true
+    } else if (rank === '记分员') {
+      this.isScorer = true
+    } else {
+      this.isPlayer = true
+    }
   }
 }
 </script>
