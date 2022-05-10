@@ -52,7 +52,6 @@ export default {
           let user = res.data.data[0]
           //登录成功时，修改vuex中user的值，实现数据通信
           this.$store.commit('setUser', user)
-          this.$bus.$emit('getUser', user)
           this.$message({
             message: '登录成功',
             type: 'success'

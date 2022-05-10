@@ -63,7 +63,7 @@ export default {
     }
   },
   created () {
-    let rank = this.$store.state.user.rank
+    let rank = JSON.parse(sessionStorage.getItem('user')).rank
     if (rank === '超级管理员') {
       this.isAdmin = true
     } else if (rank === '记分员') {

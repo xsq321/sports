@@ -5,14 +5,21 @@
     </el-breadcrumb>
 
     <el-card class="box-card">
-      欢迎： <el-link type="primary">超级管理员</el-link> admin
+      欢迎： <el-link type="primary">{{user.rank}}</el-link> {{user.username}}
     </el-card>
   </div>
 </template>
 
 <script>
 export default {
-
+  data () {
+    return {
+      user: {}
+    }
+  },
+  created () {
+    this.user = JSON.parse(sessionStorage.getItem('user'))
+  }
 }
 </script>
 
